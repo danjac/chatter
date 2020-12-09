@@ -1,11 +1,8 @@
 # Django
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
-from django.views.decorators.http import require_POST
 
 # Local
 from .forms import RoomForm
@@ -61,44 +58,3 @@ def create_room(request):
     else:
         form = RoomForm()
     return TemplateResponse(request, "chat/room_form.html", {"form": form})
-
-
-@login_required
-def unread_messages(request):
-    """Show all messages in rooms I have not read yet."""
-    recipients = (
-        Recipient.objects.filter(user=request.user, read__isnull=True)
-        .select_related("message", "message__room")
-        .order_by("-created")
-    )
-    return TemplateResponse(
-        request, "chat/unread_messages.html", {"message_recipients": recipients}
-    )
-
-
-@login_required
-def sidenav(request):
-    """Refreshes sidenav with latest messages and status"""
-    # - all rooms I belong to
-    # - rooms I have been @mentioned
-    # - new (unread) messages are flagged
-    messages = Message.objects.order_by("-created")
-    return TemplateResponse(request, "chat/_sidenav.html", {"chat_messages": messages})
-
-
-@login_required
-@require_POST
-def send_message(request, room_id):
-    """Sends a new message."""
-    room = get_object_or_404(Room.objects.select_related("owner"), pk=room_id)
-
-    if not room.is_member(request.user):
-        raise PermissionDenied("You must be a member to post a message in this room")
-
-    text = request.POST.get("text", None)
-    if not text:
-        return HttpResponseBadRequest("No message text provided")
-
-    room.create_message(request.user, text)
-    # send socket event
-    return redirect(f"{room.get_absolute_url()}#send-message")

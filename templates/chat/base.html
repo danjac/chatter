@@ -3,9 +3,9 @@
 {% block content %}
 <div class="min-h-screen flex relative">
   <div class="w-1/4 mr-4 p-3 bg-indigo-800 text-white"
-       id="chat-sidebar"
-       data-turbolinks-permanent>
-    {% get_rooms as rooms %}
+       data-controller="sidebar"
+       data-sidebar-socket-url-value="/ws/chat/">
+    {% get_sidebar user as rooms %}
     {% include "chat/_sidebar.html" %}
   </div>
   <div class="w-3/4 p-3 bg-white">

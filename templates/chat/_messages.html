@@ -1,0 +1,11 @@
+{% load account %}
+{% for message in chat_messages reversed %}
+<div class="py-3 mb-3 border-b flex items-center">
+  <div class="mr-2 font-semibold">
+    {% user_display message.sender %}
+  </div>
+  <div class="text-gray-800">
+    {{ message.text }}
+  </div>
+</div>
+{% endfor %}

@@ -17,6 +17,9 @@ export default class extends Controller {
       : this.hasRegexValue
       ? pathname.match(this.regexValue)
       : pathname.startsWith(href);
+
+    console.log(href, pathname);
+
     if (matches) {
       this.element.classList.add(this.activeClass);
     }

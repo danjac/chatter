@@ -1,6 +1,7 @@
 boto3
 celery
 channels
+channels-redis
 cryptography>=3.2
 dj-database-url
 django

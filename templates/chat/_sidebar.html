@@ -1,24 +1,26 @@
-    <nav class="pt-3">
+<nav class="pt-3">
+  <ul class="">
+    <li class="pb-3">
+      <a href="{% url 'chat:create_room' %}"
+         data-controller="active-link"
+         data-active-link-active-class="underline"
+         class="flex items-center">
+        Create New Room
+      </a>
+    </li>
+    {% for room in rooms %}
+    <li class="pb-3">
+      <a href="{{ room.url }}"
+         data-controller="active-link"
+         data-active-link-active-class="underline"
+         data-active-link-exact
+         class="flex items-center">
+        #{{ room.name }}
+        {% if room.is_mention %}!!{% endif %}
+        {% if room.is_new %}*{% endif %}
+      </a>
+    </li>
 
-      <ul class="">
-        <li class="pb-3">
-          <a href="{% url 'chat:create_room' %}"
-             data-active-link-controller
-             data-active-link-active-class="underline"
-             class="flex items-center">
-            Create New Room
-          </a>
-        </li>
-        {% for room in rooms %}
-        <li class="pb-3">
-          <a href="{{ room.get_absolute_url }}"
-             data-active-link-controller
-             data-active-link-active-class="underline"
-             class="flex items-center">
-            {{ room }}
-          </a>
-        </li>
-
-        {% endfor %}
-      </ul>
-    </nav>
+    {% endfor %}
+  </ul>
+</nav>

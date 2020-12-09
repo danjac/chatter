@@ -217,3 +217,10 @@ LOGGING = {
         "django.request": {"handlers": ["console"], "level": "ERROR"},
     },
 }
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [("redis", 6379)],},
+    },
+}
