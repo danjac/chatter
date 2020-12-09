@@ -1,32 +1,14 @@
 {% extends "base.html" %}
+{% load chat %}
 {% block content %}
-<div class="h-screen mx-auto flex relative">
-  <div class="w-1/4 mr-4 p-3 bg-indigo-800 text-white">
-    <nav class="pt-3">
-      <ul class="">
-        <li class="pb-3">
-          <a href=""
-             data-controller="active-link"
-             data-active-link-active-class="underline"
-             data-active-link-exact-value
-             class="flex items-center">
-            # company-news
-          </a>
-        </li>
-        <li class="pb-3">
-          <a href=""
-             data-controller="active-link"
-             data-active-link-active-class="underline"
-             data-active-link-exact-value
-             class="flex items-center">
-            # product-team-news
-          </a>
-        </li>
-      </ul>
-    </nav>
+<div class="min-h-screen flex relative">
+  <div class="w-1/4 mr-4 p-3 bg-indigo-800 text-white"
+       id="chat-sidebar"
+       data-turbolinks-permanent>
+    {% get_rooms as rooms %}
+    {% include "chat/_sidebar.html" %}
   </div>
-  <div class="w-3/4 p-2 bg-white"
-       data-toggle-target="item">
+  <div class="w-3/4 p-3 bg-white">
     {% block chat_content %}{% endblock %}
   </div>
 </div>

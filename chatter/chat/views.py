@@ -4,6 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 # Local
@@ -29,13 +30,22 @@ def room_detail(request, room_id):
     but we probably want to just show last 20 or so by default.
     """
     room = get_object_or_404(Room.objects.select_related("owner"), pk=room_id)
-    messages = Message.objects.filter(room=room).order_by("created")
-    Recipient.objects.filter(message__room=room, user=request.user).update(read=True)
+    messages = (
+        Message.objects.filter(room=room).order_by("-created").select_related("sender")
+    )
+
+    Recipient.objects.filter(message__room=room, user=request.user).update(
+        read=timezone.now()
+    )
 
     return TemplateResponse(
         request,
         "chat/room.html",
-        {"room": room, "messages": messages, "is_member": room.is_member(request.user)},
+        {
+            "room": room,
+            "chat_messages": messages,
+            "is_member": room.is_member(request.user),
+        },
     )
 
 
@@ -47,7 +57,7 @@ def create_room(request):
             room = form.save(commit=False)
             room.owner = request.user
             room.save()
-            return redirect(room.get_absolute_url())
+            return redirect(room)
     else:
         form = RoomForm()
     return TemplateResponse(request, "chat/room_form.html", {"form": form})
@@ -73,7 +83,7 @@ def sidenav(request):
     # - rooms I have been @mentioned
     # - new (unread) messages are flagged
     messages = Message.objects.order_by("-created")
-    return TemplateResponse(request, "chat/_sidenav.html", {"messages": messages})
+    return TemplateResponse(request, "chat/_sidenav.html", {"chat_messages": messages})
 
 
 @login_required
@@ -88,6 +98,7 @@ def send_message(request, room_id):
     text = request.POST.get("text", None)
     if not text:
         return HttpResponseBadRequest("No message text provided")
-    message = room.create_message(request.user, text)
+
+    room.create_message(request.user, text)
     # send socket event
-    return TemplateResponse(request, "chat/_message.html", {"message": message})
+    return redirect(f"{room.get_absolute_url()}#send-message")

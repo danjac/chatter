@@ -5,6 +5,7 @@ import re
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models, transaction
+from django.urls import reverse
 
 # Third Party Libraries
 from model_utils.models import TimeStampedModel
@@ -30,6 +31,9 @@ class Room(TimeStampedModel):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse("chat:room_detail", args=[self.id])
 
     def is_member(self, user):
         if user.is_anonymous:

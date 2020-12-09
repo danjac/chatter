@@ -1,0 +1,38 @@
+{% extends "chat/base.html" %}
+{% load account pagination %}
+
+{% block chat_content %}
+
+<h1 class="font-semibold text-xl mb-3">#{{ room.name }}</h1>
+{% paginate chat_messages page_size=8 as page_obj %}
+{% include "_pagination.html" %}
+{% for message in page_obj.object_list reversed %}
+<div class="py-3 mb-3 border-b flex items-center">
+  <div class="mr-2 font-semibold">
+  {% user_display message.sender %}
+  </div>
+  <div class="text-gray-800">
+    {{ message.text }}
+  </div>
+</div>
+{% endfor %}
+
+{% if is_member and page_obj.number == 1 %}
+<form method="post"
+      id="send-message"
+      action="{% url 'chat:send_message' room.id %}"
+      data-controller="form"
+      data-action="form#submit"
+      class="flex items-center mb-3">
+  {% csrf_token %}
+  <input type="text"
+         name="text"
+         placeholder="Write your message..."
+         required
+         class="mr-3 w-full">
+  <button class="rounded bg-blue-800 hover:bg-blue-600 px-3 py-2 text-white">Send</button>
+</form>
+{% endif %}
+
+
+{% endblock chat_content %}
