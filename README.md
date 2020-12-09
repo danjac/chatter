@@ -15,4 +15,5 @@ This is a very simple implementation for a hypothetical small company. We'll ass
 - if someone in a chat room "@" messages me it should have some other indicator as well
 - if a user "owns" a room they can archive it. Archived chats are dimmed, appear at the bottom, and are read-only.
 - the navbar has a search field to find messages. Message results are banded into chat rooms.
-- you can opt into browser notifications. When a user sends you a message the notification "X has sent you a message" should appear, linked to the chatroom, *unless* you happen to be in the chatroom at the time.
+
+We might also want to look at browser or in-app notifications.
