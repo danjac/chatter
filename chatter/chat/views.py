@@ -1,5 +1,6 @@
 # Django
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -28,8 +29,11 @@ def room_detail(request, room_id):
     room = get_object_or_404(Room.objects.select_related("owner"), pk=room_id)
     messages = Message.objects.filter(room=room).order_by("created")
     Recipient.objects.filter(message__room=room, user=request.user).update(read=True)
+
     return TemplateResponse(
-        request, "chat/room.html", {"room": room, "messages": messages}
+        request,
+        "chat/room.html",
+        {"room": room, "messages": messages, "is_member": room.is_member(request.user)},
     )
 
 
@@ -75,6 +79,10 @@ def sidenav(request):
 def send_message(request, room_id):
     """Sends a new message."""
     room = get_object_or_404(Room.objects.select_related("owner"), pk=room_id)
+
+    if not room.is_member(request.user):
+        raise PermissionDenied("You must be a member to post a message in this room")
+
     text = request.POST.get("text", None)
     if not text:
         return HttpResponseBadRequest("No message text provided")

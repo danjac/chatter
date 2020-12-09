@@ -7,6 +7,7 @@ from django.http import HttpResponse
 import pytest
 
 # Chatter
+from chatter.chat.factories import MessageFactory, RoomFactory
 from chatter.users.factories import UserFactory
 
 
@@ -38,3 +39,13 @@ def login_user(client):
     user.save()
     client.login(username=user.username, password=password)
     return user
+
+
+@pytest.fixture
+def room(user):
+    return RoomFactory(owner=user)
+
+
+@pytest.fixture
+def message(room, user):
+    return MessageFactory(room=room, sender=user)

@@ -12,9 +12,35 @@ from model_utils.models import TimeStampedModel
 MENTIONS_RE = re.compile(r"(?:^|\s)[＠ @]{1}([^\s#<>!.?[\]|{}]+)")
 
 
-class RoomManager(models.Manager):
+class Room(TimeStampedModel):
+    name = models.SlugField(unique=True)
+    description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="rooms_owned"
+    )
+
+    members = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        through="Member",
+        blank=True,
+        related_name="rooms_joined",
+    )
+
+    def __str__(self):
+        return self.name
+
+    def is_member(self, user):
+        if user.is_anonymous:
+            return False
+        return self.owner == user or self.members.filter(pk=user.id).exists()
+
     @transaction.atomic()
     def create_message(self, sender, text):
+        """Creates a new message. Automatically adds recipient instances
+        for all members/owner other than sender, as well as any users @mentioned
+        in the message text."""
 
         message = self.message_set.create(sender=sender, text=text)
         members = [m for m in list(self.members.all()) + [self.owner] if m != sender]
@@ -41,7 +67,7 @@ class RoomManager(models.Manager):
         new_members = Member.objects.bulk_create(
             [
                 Member(room=self, user=user)
-                for user in get_user_model().filter(username__in=usernames)
+                for user in get_user_model().objects.matches_usernames(usernames)
             ]
         )
 
@@ -52,26 +78,6 @@ class RoomManager(models.Manager):
             ]
         )
         return message
-
-
-class Room(TimeStampedModel):
-    name = models.SlugField(unique=True)
-    description = models.TextField(blank=True)
-    is_active = models.BooleanField(default=True)
-
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="rooms_owned"
-    )
-
-    members = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        through="Member",
-        blank=True,
-        related_name="rooms_joined",
-    )
-
-    def __str__(self):
-        return self.name
 
 
 class Member(TimeStampedModel):
