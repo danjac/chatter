@@ -47,6 +47,7 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 ROOT_URLCONF = "chatter.config.urls"
 WSGI_APPLICATION = "chatter.config.wsgi.application"
+ASGI_APPLICATION = "chatter.config.asgi.application"
 
 LOCAL_APPS = [
     "chatter.users.apps.UsersConfig",
@@ -67,6 +68,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "channels",
     "django_extensions",
     "djcelery_email",
     "widget_tweaks",
