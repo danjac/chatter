@@ -1,6 +1,5 @@
 # Django
 from django import template
-from django.db.models import Q
 
 # Local
 from ..models import Recipient, Room
@@ -16,9 +15,7 @@ def get_sidebar(user):
         .order_by("-created")
     )
 
-    rooms = (
-        Room.objects.filter(Q(owner=user) | Q(members=user)).order_by("name").distinct()
-    )
+    rooms = Room.objects.for_user(user).order_by("name").distinct()
 
     rv = []
 

@@ -6,8 +6,17 @@ from chatter.users.factories import UserFactory
 
 # Local
 from ..factories import MemberFactory
+from ..models import Room
 
 pytestmark = pytest.mark.django_db
+
+
+class TestRoomManager:
+    def test_for_user(self, room, anonymous_user):
+        assert Room.objects.for_user(anonymous_user).count() == 0
+        assert Room.objects.for_user(UserFactory()).count() == 0
+        assert Room.objects.for_user(room.owner).count() == 1
+        assert Room.objects.for_user(MemberFactory(room=room).user).count() == 1
 
 
 class TestRoomModel:

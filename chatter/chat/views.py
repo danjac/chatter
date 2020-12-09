@@ -1,8 +1,14 @@
 # Django
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.views.decorators.http import require_POST
+
+# Third Party Libraries
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 # Local
 from .forms import RoomForm
@@ -27,7 +33,9 @@ def room_detail(request, room_id):
     """Shows the room with all messages. For now show all messages,
     but we probably want to just show last 20 or so by default.
     """
-    room = get_object_or_404(Room.objects.select_related("owner"), pk=room_id)
+    room = get_object_or_404(
+        Room.objects.for_user(request.user).select_related("owner"), pk=room_id
+    )
     messages = (
         Message.objects.filter(room=room).order_by("-created").select_related("sender")
     )
@@ -49,7 +57,9 @@ def room_detail(request, room_id):
 
 @login_required
 def fetch_latest_messages(request, room_id):
-    room = get_object_or_404(Room.objects.select_related("owner"), pk=room_id)
+    room = get_object_or_404(
+        Room.objects.for_user(request.user).select_related("owner"), pk=room_id
+    )
     messages = (
         Message.objects.filter(room=room)
         .order_by("-created")
@@ -63,6 +73,24 @@ def sidebar(request):
     return TemplateResponse(
         request, "chat/_sidebar.html", {"rooms": get_sidebar(request.user)}
     )
+
+
+@login_required
+@require_POST
+def send_message(request, room_id):
+    room = get_object_or_404(Room.objects.for_user(request.user), pk=room_id)
+    text = request.POST.get("text")
+    if text is None:
+        return HttpResponseBadRequest("Invalid message")
+    message = room.create_message(request.user, text)
+    channel_layer = get_channel_layer()
+    data = {
+        "type": "chat.message",
+        "group": f"room-{room.id}",
+        "message": {"sender": request.user.username, "text": text, "id": message.id,},
+    }
+    async_to_sync(channel_layer.group_send)("chat", data)
+    return JsonResponse(data)
 
 
 @login_required

@@ -4,7 +4,7 @@
       <a href="{% url 'chat:create_room' %}"
          data-controller="active-link"
          data-active-link-active-class="underline"
-         class="flex items-center">
+         class="hover:underline">
         Create New Room
       </a>
     </li>
@@ -14,7 +14,7 @@
          data-controller="active-link"
          data-active-link-active-class="underline"
          data-active-link-exact
-         class="flex items-center">
+         class="hover:underline">
         #{{ room.name }}
         {% if room.is_mention %}!!{% endif %}
         {% if room.is_new %}*{% endif %}

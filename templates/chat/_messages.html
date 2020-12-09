@@ -1,7 +1,7 @@
 {% load account %}
 {% for message in chat_messages reversed %}
 <div class="py-3 mb-3 border-b flex items-center">
-  <div class="mr-2 font-semibold">
+  <div class="mr-2 font-semibold{% if message.sender == user %} text-purple-600{% endif %}">
     {% user_display message.sender %}
   </div>
   <div class="text-gray-800">

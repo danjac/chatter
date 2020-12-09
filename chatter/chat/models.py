@@ -13,6 +13,17 @@ from model_utils.models import TimeStampedModel
 MENTIONS_RE = re.compile(r"(?:^|\s)[＠ @]{1}([^\s#<>!.?[\]|{}]+)")
 
 
+class RoomQuerySet(models.QuerySet):
+    def for_user(self, user):
+        if user.is_anonymous:
+            return self.none()
+        return self.filter(models.Q(owner=user) | models.Q(members=user)).distinct()
+
+
+class RoomManager(models.Manager.from_queryset(RoomQuerySet)):
+    ...
+
+
 class Room(TimeStampedModel):
     name = models.SlugField(unique=True)
     description = models.TextField(blank=True)
@@ -28,6 +39,8 @@ class Room(TimeStampedModel):
         blank=True,
         related_name="rooms_joined",
     )
+
+    objects = RoomManager()
 
     def __str__(self):
         return self.name

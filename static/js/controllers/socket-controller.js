@@ -7,7 +7,7 @@ export default class extends Controller {
   static values = {
     url: String,
     fetchUrl: String,
-    room: String,
+    group: String,
     type: String,
   };
 
@@ -24,8 +24,11 @@ export default class extends Controller {
 
   async newMessage(event) {
     if (this.hasFetchUrlValue && this.hasTypeValue) {
-      const { room, type } = JSON.parse(event.data);
-      if (type === this.typeValue && (!this.hasRoomValue || this.roomValue === room)) {
+      const { group, type } = JSON.parse(event.data);
+      if (
+        type === this.typeValue &&
+        (!this.hasgroupValue || this.groupValue === group)
+      ) {
         const response = await axios.get(this.fetchUrlValue);
         this.element.innerHTML = response.data;
       }
