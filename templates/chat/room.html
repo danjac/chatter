@@ -10,9 +10,11 @@
 
 
   {% if page_obj.number == 1 %}
-  <div data-controller="socket"
+  <div data-controller="socket ajax"
+       data-socket-type-value="chat.message"
+       data-socket-fetch-url-value="{% url 'chat:fetch_latest_messages' room.id %}"
        data-socket-url-value="/ws/chat/{{ room.id }}/"
-       data-socket-fragment-value="room-{{ room.id }}">
+       data-socket-room-value="room-{{ room.id }}">
     {% else %}
     <div>
       {% endif %}
@@ -22,6 +24,7 @@
     {% if is_member and page_obj.number == 1 %}
     <form class="flex items-center mb-3"
           data-controller="socket"
+          data-socket-type-value="chat.message"
           data-socket-url-value="/ws/chat/{{ room.id }}/"
           data-action="socket#send">
       {% csrf_token %}

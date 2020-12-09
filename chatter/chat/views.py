@@ -7,6 +7,7 @@ from django.utils import timezone
 # Local
 from .forms import RoomForm
 from .models import Message, Recipient, Room
+from .templatetags.chat import get_sidebar
 
 
 @login_required
@@ -43,6 +44,24 @@ def room_detail(request, room_id):
             "chat_messages": messages,
             "is_member": room.is_member(request.user),
         },
+    )
+
+
+@login_required
+def fetch_latest_messages(request, room_id):
+    room = get_object_or_404(Room.objects.select_related("owner"), pk=room_id)
+    messages = (
+        Message.objects.filter(room=room)
+        .order_by("-created")
+        .select_related("sender")[:9]
+    )
+    return TemplateResponse(request, "chat/_messages.html", {"chat_messages": messages})
+
+
+@login_required
+def sidebar(request):
+    return TemplateResponse(
+        request, "chat/_sidebar.html", {"rooms": get_sidebar(request.user)}
     )
 
 

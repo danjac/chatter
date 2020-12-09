@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
@@ -5,28 +6,28 @@ export default class extends Controller {
 
   static values = {
     url: String,
-    fragment: String,
+    fetchUrl: String,
+    room: String,
+    type: String,
   };
 
   connect() {
     // Websockets setup
     this.socket = new WebSocket('ws://' + window.location.host + this.urlValue);
     this.socket.onmessage = this.newMessage.bind(this);
-
-    console.log(this.element, this.fragmentValue);
   }
 
   disconnect() {
-    console.log('disconnecting...');
     this.socket.close();
     this.socket = null;
   }
 
-  newMessage(event) {
-    if (this.hasFragmentValue) {
-      const { fragments } = JSON.parse(event.data);
-      if (fragments[this.fragmentValue]) {
-        this.element.innerHTML = fragments[this.fragmentValue];
+  async newMessage(event) {
+    if (this.hasFetchUrlValue && this.hasTypeValue) {
+      const { room, type } = JSON.parse(event.data);
+      if (type === this.typeValue && (!this.hasRoomValue || this.roomValue === room)) {
+        const response = await axios.get(this.fetchUrlValue);
+        this.element.innerHTML = response.data;
       }
     }
   }
