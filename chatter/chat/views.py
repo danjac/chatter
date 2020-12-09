@@ -12,13 +12,15 @@ from .models import Message, Recipient, Room
 
 
 @login_required
-def room_list(request):
-    """Lists all unarchived rooms I belong to. Should be ordered by
-    last updated.
+def do_redirect(request):
     """
-    rooms = Room.objects.all()
-
-    return TemplateResponse(request, "chat/index.html", {"rooms": rooms})
+    If no rooms, then jumps to the "create room" page. Otherwise jumps
+    to the most recently updated room the user belongs to.
+    """
+    room = Room.objects.first()
+    if room:
+        return redirect(room)
+    return redirect("chat:create_room")
 
 
 @login_required
@@ -47,7 +49,7 @@ def create_room(request):
             room.save()
             return redirect(room.get_absolute_url())
     else:
-        room = RoomForm()
+        form = RoomForm()
     return TemplateResponse(request, "chat/room_form.html", {"form": form})
 
 

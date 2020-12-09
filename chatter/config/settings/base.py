@@ -117,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-HOME_URL = LOGIN_REDIRECT_URL = "/"
+HOME_URL = LOGIN_REDIRECT_URL = "/chat/"
 
 LOGIN_URL = "account_login"
 

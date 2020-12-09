@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="h-screen mx-auto flex relative">
+  <div class="w-1/4 mr-4 p-3 bg-indigo-800 text-white">
+    <nav class="pt-3">
+      <ul class="">
+        <li class="pb-3">
+          <a href=""
+             data-controller="active-link"
+             data-active-link-active-class="underline"
+             data-active-link-exact-value
+             class="flex items-center">
+            # company-news
+          </a>
+        </li>
+        <li class="pb-3">
+          <a href=""
+             data-controller="active-link"
+             data-active-link-active-class="underline"
+             data-active-link-exact-value
+             class="flex items-center">
+            # product-team-news
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  <div class="w-3/4 p-2 bg-white"
+       data-toggle-target="item">
+    {% block chat_content %}{% endblock %}
+  </div>
+</div>
+{% endblock content %}
