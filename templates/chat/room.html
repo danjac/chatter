@@ -5,36 +5,34 @@
 
 <h1 class="font-semibold text-xl mb-3">#{{ room.name }}</h1>
 {% paginate chat_messages page_size=8 as page_obj %}
-{% include "_pagination.html" %}
-<div>
+{% include "_pagination.html" with css_class="pb-3 border-b" %}
 
-
-  {% if page_obj.number == 1 %}
-  <div data-controller="socket ajax"
-       data-socket-type-value="chat.message"
-       data-socket-url-value="/ws/chat/{{ room.id }}/"
-       data-socket-fetch-url-value="{% url 'chat:fetch_latest_messages' room.id %}"
-       data-socket-group-value="room-{{ room.id }}">
-    {% else %}
-    <div>
-      {% endif %}
-      {% include "chat/_messages.html" with chat_messages=page_obj.object_list %}
-    </div>
-
-    {% if is_member and page_obj.number == 1 %}
-    <form class="flex items-center mb-3"
-          data-controller="form"
-          method="post"
-          action="{% url 'chat:send_message' room.id %}"
-          data-action="form#submit form#reset">
-      {% csrf_token %}
-      <input type="text"
-             name="text"
-             placeholder="Write your message..."
-             required
-             class="mr-3 w-full">
-      <button class="rounded bg-blue-800 hover:bg-blue-600 px-3 py-2 text-white">Send</button>
-    </form>
+{% if page_obj.number == 1 %}
+<div data-controller="socket ajax"
+     data-socket-type-value="chat.message"
+     data-socket-url-value="/ws/chat/{{ room.id }}/"
+     data-socket-fetch-url-value="{% url 'chat:fetch_latest_messages' room.id %}"
+     data-socket-group-value="room-{{ room.id }}">
+  {% else %}
+  <div>
     {% endif %}
+    {% include "chat/_messages.html" with chat_messages=page_obj.object_list %}
   </div>
-  {% endblock chat_content %}
+
+  {% if is_member and page_obj.number == 1 %}
+  <form class="flex items-center mt-6"
+        data-controller="form"
+        method="post"
+        action="{% url 'chat:send_message' room.id %}"
+        data-action="form#submit form#reset">
+    {% csrf_token %}
+    <input type="text"
+           name="text"
+           placeholder="Write your message..."
+           required
+           class="mr-3 w-full">
+    <button class="rounded bg-blue-800 hover:bg-blue-600 px-3 py-2 text-white">Send</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock chat_content %}
