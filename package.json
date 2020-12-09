@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "run-p watch:css watch:js",
     "build": "run-p build:css build:js",
-    "watch:css": "postcss ./static/css/app.css -o ./static/dist/app.css -w",
+    "watch:css": "postcss ./static/css/app.css -o ./static/dist/app.css -w --verbose",
     "watch:js": "webpack-cli --watch --mode=development",
     "build:css": "NODE_ENV=production postcss ./static/css/app.css -o ./static/dist/app.css",
     "build:js": "NODE_ENV=production webpack-cli"

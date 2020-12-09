@@ -1,3 +1,4 @@
+bleach
 boto3
 celery
 channels
@@ -19,6 +20,7 @@ factory-boy
 future
 gunicorn
 ipython
+markdown
 psycopg2-binary
 pyopenssl
 pytest

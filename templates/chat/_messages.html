@@ -1,4 +1,4 @@
-{% load account %}
+{% load account chat %}
 {% for message in chat_messages reversed %}
 <div class="py-3 border-b flex items-center justify-between w-full">
   <div class="flex items-center">
@@ -6,7 +6,7 @@
       {% user_display message.sender %}
     </div>
     <div class="text-gray-800">
-      {{ message.text }}
+      {{ message.text|as_markdown }}
     </div>
   </div>
   <div class="text-sm text-gray-500">{{ message.created|date:"H:i d.m.Y" }}</div>

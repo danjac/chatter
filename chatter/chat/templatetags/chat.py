@@ -1,10 +1,45 @@
+# Standard Library
+import html
+
 # Django
 from django import template
+from django.template.defaultfilters import stringfilter
+from django.utils.safestring import mark_safe
+
+# Third Party Libraries
+import bleach
+import markdown
 
 # Local
 from ..models import Recipient, Room
 
 register = template.Library()
+
+
+cleaner = bleach.Cleaner(tags=bleach.ALLOWED_TAGS + ["p", "div", "br"], strip=True)
+
+
+def linkify_callback(attrs, new=False):
+    attrs[(None, "target")] = "_blank"
+    attrs[(None, "rel")] = "noopener noreferrer nofollow"
+    return attrs
+
+
+@register.filter
+@stringfilter
+def as_markdown(text):
+    try:
+        return mark_safe(
+            html.unescape(
+                bleach.linkify(
+                    cleaner.clean(markdown.markdown(text)), [linkify_callback]
+                )
+            )
+            if text
+            else ""
+        )
+    except (ValueError, TypeError):
+        return ""
 
 
 @register.simple_tag
