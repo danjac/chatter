@@ -3,8 +3,9 @@
 {% block content %}
 <div class="min-h-screen flex relative">
   <div class="w-1/4 mr-4 p-3 bg-indigo-800 text-white"
-       data-controller="sidebar"
-       data-sidebar-socket-url-value="/ws/chat/">
+       data-controller="socket"
+       data-socket-url-value="/ws/chat/"
+       data-socket-fragment-value="sidebar">
     {% get_sidebar user as rooms %}
     {% include "chat/_sidebar.html" %}
   </div>

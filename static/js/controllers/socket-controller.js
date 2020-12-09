@@ -1,16 +1,19 @@
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
-  static targets = ['input', 'messages'];
+  static targets = ['input'];
+
   static values = {
-    id: String,
-    socketUrl: String,
+    url: String,
+    fragment: String,
   };
 
   connect() {
     // Websockets setup
-    this.socket = new WebSocket('ws://' + window.location.host + this.socketUrlValue);
+    this.socket = new WebSocket('ws://' + window.location.host + this.urlValue);
     this.socket.onmessage = this.newMessage.bind(this);
+
+    console.log(this.element, this.fragmentValue);
   }
 
   disconnect() {
@@ -20,15 +23,15 @@ export default class extends Controller {
   }
 
   newMessage(event) {
-    const { message } = JSON.parse(event.data);
-    if (message.room === this.idValue) {
-      if (this.hasMessagesTarget) {
-        this.messagesTarget.innerHTML = message.messages;
+    if (this.hasFragmentValue) {
+      const { fragments } = JSON.parse(event.data);
+      if (fragments[this.fragmentValue]) {
+        this.element.innerHTML = fragments[this.fragmentValue];
       }
     }
   }
 
-  async submit(event) {
+  async send(event) {
     event.preventDefault();
     const text = this.inputTarget.value.trim();
     if (text) {

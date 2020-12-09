@@ -58,9 +58,10 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         await self.send_json(
             {
                 **event,
-                "sidebar": render_to_string(
-                    "chat/_sidebar.html", {"user": self.user, "rooms": rooms},
-                ),
+                "fragments": {
+                    **event["fragments"],
+                    "sidebar": render_to_string("chat/_sidebar.html", {"rooms": rooms}),
+                },
             }
         )
 
@@ -70,18 +71,16 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         text = data["text"]
 
         room = await get_room(room_id, self.user)
-        message = await send_message(room, self.user, text)
+        await send_message(room, self.user, text)
+
         messages = await get_messages(room)
 
         await self.channel_layer.group_send(
             "chat",
             {
                 "type": "chat.message",
-                "message": {
-                    "text": message.text,
-                    "sender": self.user.username,
-                    "room": room_id,
-                    "messages": render_to_string(
+                "fragments": {
+                    f"room-{room.id}": render_to_string(
                         "chat/_messages.html", {"chat_messages": messages}
                     ),
                 },
