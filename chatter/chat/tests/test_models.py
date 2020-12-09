@@ -11,6 +11,15 @@ pytestmark = pytest.mark.django_db
 
 
 class TestRoomModel:
+    def test_is_member(self, room, anonymous_user):
+        member = MemberFactory(room=room).user
+        non_member = UserFactory()
+
+        assert not room.is_member(anonymous_user)
+        assert not room.is_member(non_member)
+        assert room.is_member(member)
+        assert room.is_member(room.owner)
+
     def test_create_message(self, room):
         member = MemberFactory(room=room).user
         mentioned = UserFactory(username="rando")
