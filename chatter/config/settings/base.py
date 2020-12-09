@@ -50,6 +50,7 @@ WSGI_APPLICATION = "chatter.config.wsgi.application"
 ASGI_APPLICATION = "chatter.config.asgi.application"
 
 LOCAL_APPS = [
+    "chatter.chat.apps.ChatConfig",
     "chatter.users.apps.UsersConfig",
 ]
 
