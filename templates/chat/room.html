@@ -8,7 +8,7 @@
 {% include "_pagination.html" with css_class="pb-3 border-b" %}
 
 {% if page_obj.number == 1 %}
-<div data-controller="socket ajax"
+<div data-controller="socket"
      data-socket-type-value="chat.message"
      data-socket-url-value="/ws/chat/"
      data-socket-fetch-url-value="{% url 'chat:fetch_latest_messages' room.id %}"
