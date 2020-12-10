@@ -6,7 +6,7 @@
 {% endif %}
 {% regroup chat_messages by room as message_list %}
 {% for room in message_list %}
-<div class="pb-3 mb-3 border-b">
+<div class="mb-3 border-b">
   <h2 class="text-lg font-semibold">
     <a href="{{ room.grouper.get_absolute_url }}"
        class="text-blue-800 hover:text-blue-600">
@@ -21,7 +21,9 @@
       </div>
       <div class="text-sm text-gray-500">{{ message.created|date:"H:i d.m" }}</div>
     </div>
-    {{ message.text|as_markdown }}
+    <div class="markdown">
+      {{ message.text|as_markdown }}
+    </div>
   </div>
   {% endfor %}
 </div>

@@ -7,6 +7,8 @@
     </div>
     <div class="text-sm text-gray-500">{{ message.created|date:"H:i d.m" }}</div>
   </div>
-  {{ message.text|as_markdown }}
+  <div class="markdown">
+    {{ message.text|as_markdown }}
+  </div>
 </div>
 {% endfor %}
