@@ -112,6 +112,21 @@ class Member(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 
+class MessageQuerySet(models.QuerySet):
+    def for_user(self, user):
+        """Return only messages for rooms the user belongs to"""
+
+        if user.is_anonymous:
+            return self.none()
+        return self.filter(
+            models.Q(room__owner=user) | models.Q(room__members=user)
+        ).distinct()
+
+
+class MessageManager(models.Manager.from_queryset(MessageQuerySet)):
+    ...
+
+
 class Message(TimeStampedModel):
     text = models.TextField()
 
@@ -124,6 +139,8 @@ class Message(TimeStampedModel):
     recipients = models.ManyToManyField(
         settings.AUTH_USER_MODEL, through="Recipient", related_name="messages_received",
     )
+
+    objects = MessageManager()
 
 
 class Recipient(TimeStampedModel):
