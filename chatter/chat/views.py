@@ -22,9 +22,29 @@ def do_redirect(request):
     If no rooms, then jumps to the "create room" page. Otherwise jumps
     to the most recently updated room the user belongs to.
     """
-    room = Room.objects.first()
+    recipient = (
+        Recipient.objects.filter(user=request.user, read__isnull=True)
+        .select_related("message__room")
+        .order_by("-created")
+        .first()
+    )
+    if recipient:
+        return redirect(recipient.message.room)
+
+    message = (
+        Message.objects.filter(sender=request.user)
+        .select_related("room")
+        .order_by("-created")
+        .first()
+    )
+    if message:
+        return redirect(message.room)
+
+    room = Room.objects.for_user(request.user).order_by("name").first()
+
     if room:
         return redirect(room)
+
     return redirect("chat:create_room")
 
 

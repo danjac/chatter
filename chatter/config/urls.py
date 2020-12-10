@@ -5,8 +5,11 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
 
+# Chatter
+from chatter.chat.views import do_redirect
+
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="index.html")),
+    path("", do_redirect),
     path("account/", include("allauth.urls")),
     path("chat/", include("chatter.chat.urls")),
     path(settings.ADMIN_URL, admin.site.urls),
