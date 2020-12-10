@@ -2,7 +2,7 @@
 
 Simple MVP chat application using Django+StimulusJS. This is an experiment using django async and channels as well as websockets.
 
-Requirements v0.1
+## Spec
 
 This is a very simple implementation for a hypothetical small company.
 
