@@ -1,21 +1,23 @@
 {% extends "chat/base.html" %}
+{% load account chat pagination %}
+
 {% block chat_content %}
-{% load account chat %}
 {% if search %}
-<h1 class="text-xl font-bold mb-3">Search for "{{ search }}"</h1>
+<h1 class="text-xl font-bold mb-3 pb-1 border-b">Search for "{{ search }}"</h1>
 {% endif %}
-{% regroup chat_messages by room as message_list %}
-{% for room in message_list %}
-<div class="mb-3 border-b">
+{% paginate chat_messages page_size=12 as page_obj %}
+{% regroup page_obj.object_list by room as message_list %}
+{% for item in message_list %}
+<div class="mb-1 border-b">
   <h2 class="text-lg font-semibold">
-    <a href="{{ room.grouper.get_absolute_url }}"
+    <a href="{{ item.grouper.get_absolute_url }}"
        class="text-blue-800 hover:text-blue-600">
-      {{ room.grouper.name }}
+      {{ item.grouper.name }}
     </a>
   </h2>
-  {% for message in room.list %}
+  {% for message in item.list %}
   <div class="py-1 w-full{% if not forloop.last %} border-b{% endif %}">
-    <div class="flex items-center justify-between mb-1">
+    <div class="flex items-center justify-between">
       <div class="mr-2 font-semibold{% if message.sender == user %} text-purple-600{% endif %}">
         {% user_display message.sender %}
       </div>
@@ -28,4 +30,5 @@
   {% endfor %}
 </div>
 {% endfor %}
+{% include "_pagination.html" %}
 {% endblock chat_content %}

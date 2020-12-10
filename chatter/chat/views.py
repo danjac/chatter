@@ -51,7 +51,9 @@ def do_redirect(request):
 def search(request):
     search = request.GET.get("q", "").strip()
     if search:
-        messages = Message.objects.filter(text__icontains=search).order_by("-created")
+        messages = Message.objects.filter(text__icontains=search).order_by(
+            "room_id", "-created"
+        )
     else:
         messages = Message.objects.none()
     return TemplateResponse(
