@@ -35,8 +35,8 @@ class MessageFactory(DjangoModelFactory):
 
 
 class RecipientFactory(DjangoModelFactory):
-    room = SubFactory(RoomFactory)
     message = SubFactory(MessageFactory)
+    user = SubFactory(UserFactory)
 
     class Meta:
         model = Recipient

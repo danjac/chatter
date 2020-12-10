@@ -50,7 +50,7 @@ def do_redirect(request):
 
 @login_required
 def search(request):
-    search = request.GET.get("q")
+    search = request.GET.get("q", "").strip()
     if search:
         messages = Message.objects.filter(text__icontains=search).order_by("-created")
     else:

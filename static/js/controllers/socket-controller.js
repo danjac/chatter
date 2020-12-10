@@ -14,7 +14,7 @@ export default class extends Controller {
   connect() {
     // Websockets setup
     this.socket = new WebSocket('ws://' + window.location.host + this.urlValue);
-    this.socket.onmessage = this.newMessage.bind(this);
+    this.socket.onmessage = this.onMessage.bind(this);
   }
 
   disconnect() {
@@ -22,29 +22,14 @@ export default class extends Controller {
     this.socket = null;
   }
 
-  async newMessage(event) {
-    if (this.hasFetchUrlValue && this.hasTypeValue) {
-      const { group, type } = JSON.parse(event.data);
-      if (
-        type === this.typeValue &&
-        (!this.hasgroupValue || this.groupValue === group)
-      ) {
-        const response = await axios.get(this.fetchUrlValue);
-        this.element.innerHTML = response.data;
-      }
-    }
-  }
-
-  async send(event) {
-    event.preventDefault();
-    const text = this.inputTarget.value.trim();
-    if (text) {
-      this.socket.send(
-        JSON.stringify({
-          text,
-        })
-      );
-      this.inputTarget.value = '';
+  async onMessage(event) {
+    // must match group and type
+    // e.g. socket-type-value="chat.message" socket-group-value="room-1234"
+    // if matches then should do AJAX fetch to refresh content.
+    const { group, type } = JSON.parse(event.data);
+    if (type === this.typeValue && (!this.hasGroupValue || this.groupValue === group)) {
+      const response = await axios.get(this.fetchUrlValue);
+      this.element.innerHTML = response.data;
     }
   }
 }
