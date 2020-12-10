@@ -124,7 +124,6 @@ def send_message(request, room_id):
         "message": {"sender": request.user.username, "text": text, "id": message.id},
     }
     async_to_sync(get_channel_layer().group_send)("chat", data)
-    print("done")
     return JsonResponse(data)
 
 
