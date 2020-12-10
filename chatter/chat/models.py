@@ -150,4 +150,8 @@ class Recipient(TimeStampedModel):
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
     mentioned = models.BooleanField(default=False)
     read = models.DateTimeField(null=True, blank=True)
-    # TBD: unique constraint for message/user
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(name="uniq_recipient", fields=["user", "message"])
+        ]
