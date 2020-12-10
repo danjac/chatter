@@ -66,7 +66,6 @@ class Room(TimeStampedModel):
 
         # we should be careful if anyone has username "channel" or "here"...
         everyone = "channel" in mentions or "here" in mentions
-        print("everyone", everyone)
 
         Recipient.objects.bulk_create(
             [
