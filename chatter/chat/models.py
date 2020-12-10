@@ -64,10 +64,16 @@ class Room(TimeStampedModel):
 
         mentions = MENTIONS_RE.findall(text)
 
+        # we should be careful if anyone has username "channel" or "here"...
+        everyone = "channel" in mentions or "here" in mentions
+        print("everyone", everyone)
+
         Recipient.objects.bulk_create(
             [
                 Recipient(
-                    message=message, user=member, mentioned=member.username in mentions
+                    message=message,
+                    user=member,
+                    mentioned=everyone or member.username in mentions,
                 )
                 for member in members
             ]
