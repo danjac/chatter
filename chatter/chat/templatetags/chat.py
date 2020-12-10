@@ -52,7 +52,7 @@ def get_sidebar(user):
 
     rooms = Room.objects.for_user(user).order_by("name").distinct()
 
-    rv = []
+    rv = {"new": [], "other": []}
 
     for room in rooms:
         recipients = [r for r in all_recipients if r.message.room == room]
@@ -62,8 +62,10 @@ def get_sidebar(user):
             "id": room.id,
             "url": room.get_absolute_url(),
             "name": room.name,
-            "is_new": bool(recipients),
             "is_mention": is_mention,
         }
-        rv.append(data)
+        if recipients:
+            rv["new"].append(data)
+        else:
+            rv["other"].append(data)
     return rv

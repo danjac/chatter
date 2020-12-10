@@ -8,8 +8,8 @@
         Create New Room
       </a>
     </li>
-    {% for room in rooms %}
-    <li class="pb-3{% if room.is_new %} font-bold{% endif %}">
+    {% for room in rooms.new %}
+    <li class="pb-3 font-bold">
       <a href="{{ room.url }}"
          data-controller="active-link"
          data-active-link-active-class="underline"
@@ -19,7 +19,18 @@
         {% if room.is_mention %}*{% endif %}
       </a>
     </li>
+    {% endfor %}
 
+    {% for room in rooms.other %}
+    <li class="pb-3">
+      <a href="{{ room.url }}"
+         data-controller="active-link"
+         data-active-link-active-class="underline"
+         data-active-link-exact
+         class="hover:underline">
+        #{{ room.name }}
+      </a>
+    </li>
     {% endfor %}
   </ul>
 </nav>
