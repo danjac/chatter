@@ -45,3 +45,9 @@ Edit the environment variables as per the SAAS starter instructions.
 Specific parts of the site we want to update asynchronously are demarcated with a Stimulus socket controller. This controller automatically reloads the content of the element with an AJAX request if the specific group/type match the websocket data.
 
 Another approach - similar to the LiveView or Stimulus-Reflex pattern, would be to render and push the content itself in the channel consumer. The content could be separated into different "sections" and the client socket controllers could specify which section they would refresh when a new message is pushed. For example, one section could be "sidebar", and the socket controller for the sidebar would refresh the element with this content.
+
+## License
+
+This project is covered by GNU Affero General Public License (AGPL).
+
+
