@@ -32,6 +32,10 @@
   @apply text-blue-800 break-words;
 }
 
+.markdown a:hover {
+  @apply text-blue-600;
+}
+
 .markdown p {
   @apply py-3;
 }
