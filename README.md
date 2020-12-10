@@ -23,3 +23,11 @@ These features would likely be needed in any "serious" production app but are no
 - browser or in-app notifications when a new message is received
 - typeahead to find other user when typing "@" and a name
 - archive/delete rooms if owner
+
+A production deployment should also use Daphne or Uvicorn as channel backend.
+
+## Architecture
+
+Specific parts of the site we want to update asynchronously are demarcated with a Stimulus socket controller. This controller automatically reloads the content of the element with an AJAX request if the specific group/type match the websocket data.
+
+Another approach - similar to the "LiveView" or Stimulus-Reflex pattern, would be to render and push the content itself in the channel consumer. The content could be separated into different "sections" and the client socket controllers could specify which section they would refresh when a new message is pushed. For example, one section could be "sidebar", and the socket controller for the sidebar would refresh the element with this content.
