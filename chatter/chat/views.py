@@ -74,13 +74,7 @@ def room_detail(request, room_id):
     room.mark_read(request.user)
 
     return TemplateResponse(
-        request,
-        "chat/room.html",
-        {
-            "room": room,
-            "chat_messages": messages,
-            "is_member": room.is_member(request.user),
-        },
+        request, "chat/room.html", {"room": room, "chat_messages": messages,},
     )
 
 

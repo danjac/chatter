@@ -19,7 +19,7 @@
     {% include "chat/_messages.html" with chat_messages=page_obj.object_list %}
   </div>
 
-  {% if is_member and page_obj.number == 1 %}
+  {% if page_obj.number == 1 %}
   <form class="flex items-center mt-6"
         data-controller="form"
         method="post"
