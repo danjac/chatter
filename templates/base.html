@@ -1,4 +1,3 @@
-
 {% spaceless %}
 
 {% load static %}
@@ -41,6 +40,20 @@
       </div>
 
       {% if user.is_authenticated %}
+
+      <div>
+        <form method="GET"
+              action="{% url 'chat:search' %}"
+              data-controller="form"
+              data-action="form#submit form#reset">
+          <input type="search"
+                 placeholder="Search..."
+                 name="q"
+                 class="h-8 text-gray-800">
+        </form>
+
+      </div>
+
       <div>
         <a href="/"
            class="inline-block text-white hover:text-gray-100 mr-2">
@@ -78,5 +91,3 @@
 </body>
 
 </html>
-
-

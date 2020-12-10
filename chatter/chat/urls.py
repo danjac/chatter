@@ -15,5 +15,6 @@ urlpatterns = [
         views.fetch_latest_messages,
         name="fetch_latest_messages",
     ),
+    path("search/", views.search, name="search"),
     path("sidebar/", views.sidebar, name="sidebar"),
 ]

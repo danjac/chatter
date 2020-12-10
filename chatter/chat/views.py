@@ -49,6 +49,18 @@ def do_redirect(request):
 
 
 @login_required
+def search(request):
+    search = request.GET.get("q")
+    if search:
+        messages = Message.objects.filter(text__icontains=search).order_by("-created")
+    else:
+        messages = Message.objects.none()
+    return TemplateResponse(
+        request, "chat/search.html", {"search": search, "chat_messages": messages}
+    )
+
+
+@login_required
 def room_detail(request, room_id):
     """Shows the room with all messages. For now show all messages,
     but we probably want to just show last 20 or so by default.
