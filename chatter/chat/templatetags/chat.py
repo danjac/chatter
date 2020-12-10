@@ -1,5 +1,6 @@
 # Standard Library
 import html
+import operator
 
 # Django
 from django import template
@@ -50,13 +51,13 @@ def get_sidebar(user):
         .order_by("-created")
     )
 
-    rooms = Room.objects.for_user(user).order_by("name").distinct()
+    rooms = Room.objects.for_user(user)
 
     rv = {"new": [], "other": []}
 
     for room in rooms:
         recipients = [r for r in all_recipients if r.message.room == room]
-        is_mention = recipients and recipients[0].mentioned
+        is_mention = bool(recipients and recipients[0].mentioned)
 
         data = {
             "id": room.id,
@@ -65,7 +66,12 @@ def get_sidebar(user):
             "is_mention": is_mention,
         }
         if recipients:
+            data["last_updated"] = max([r.created for r in recipients])
             rv["new"].append(data)
         else:
             rv["other"].append(data)
+
+    rv["new"].sort(key=operator.itemgetter("last_updated"), reverse=True)
+    rv["other"].sort(key=operator.itemgetter("name"))
+
     return rv

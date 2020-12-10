@@ -115,16 +115,16 @@ def sidebar(request):
 def send_message(request, room_id):
     room = get_object_or_404(Room.objects.for_user(request.user), pk=room_id)
     text = request.POST.get("text")
-    if text is None:
+    if not text:
         return HttpResponseBadRequest("Invalid message")
     message = room.create_message(request.user, text)
-    channel_layer = get_channel_layer()
     data = {
         "type": "chat.message",
         "group": f"room-{room.id}",
         "message": {"sender": request.user.username, "text": text, "id": message.id},
     }
-    async_to_sync(channel_layer.group_send)("chat", data)
+    async_to_sync(get_channel_layer().group_send)("chat", data)
+    print("done")
     return JsonResponse(data)
 
 
