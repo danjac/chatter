@@ -10,7 +10,7 @@
 {% if page_obj.number == 1 %}
 <div data-controller="socket ajax"
      data-socket-type-value="chat.message"
-     data-socket-url-value="/ws/chat/{{ room.id }}/"
+     data-socket-url-value="/ws/chat/"
      data-socket-fetch-url-value="{% url 'chat:fetch_latest_messages' room.id %}"
      data-socket-group-value="room-{{ room.id }}">
   {% else %}

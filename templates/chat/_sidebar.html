@@ -9,15 +9,14 @@
       </a>
     </li>
     {% for room in rooms %}
-    <li class="pb-3">
+    <li class="pb-3{% if room.is_new %} font-bold{% endif %}">
       <a href="{{ room.url }}"
          data-controller="active-link"
          data-active-link-active-class="underline"
          data-active-link-exact
          class="hover:underline">
         #{{ room.name }}
-        {% if room.is_mention %}!!{% endif %}
-        {% if room.is_new %}*{% endif %}
+        {% if room.is_mention %}*{% endif %}
       </a>
     </li>
 

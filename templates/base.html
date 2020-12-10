@@ -23,23 +23,23 @@
         content="Dan Jacob {% now "Y" %}">
   <meta name="robots"
         content="index,follow">
-  
+
   {% include "_static.html" %}
   {% include "_fontawesome.html" %}
-  
+
 </head>
 
 <body class="h-screen container-lg mx-auto antialiased bg-gray-100">
 
-  
+
   {% block header %}
-  
-  <header class="bg-gradient-to-b from-indigo-900 to-indigo-700 text-white">
+
+  <header class="bg-gradient-to-b from-blue-900 to-blue-700 text-white mb-3">
     <div class="flex items-center justify-between p-2 md:px-12">
       <div class="flex items-center flex-shrink-0 mr-6 text-lg">
         <a href="/">Chatter</a>
       </div>
-      
+
       {% if user.is_authenticated %}
       <div>
         <a href="/"

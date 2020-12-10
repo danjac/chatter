@@ -44,7 +44,7 @@ def as_markdown(text):
 
 @register.simple_tag
 def get_sidebar(user):
-    recipients = (
+    all_recipients = (
         Recipient.objects.filter(user=user, read__isnull=True)
         .select_related("message", "message__sender", "message__room")
         .order_by("-created")
@@ -55,7 +55,7 @@ def get_sidebar(user):
     rv = []
 
     for room in rooms:
-        recipients = [r for r in recipients if r.message.room == room]
+        recipients = [r for r in all_recipients if r.message.room == room]
         is_mention = recipients and recipients[0].mentioned
 
         data = {

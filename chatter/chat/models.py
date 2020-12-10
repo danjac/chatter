@@ -75,6 +75,7 @@ class Room(TimeStampedModel):
 
         # if anyone @mentioned, automatically add them to the chatroom
         member_usernames = [m.username for m in members]
+
         usernames = [
             username
             for username in mentions
@@ -127,3 +128,4 @@ class Recipient(TimeStampedModel):
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
     mentioned = models.BooleanField(default=False)
     read = models.DateTimeField(null=True, blank=True)
+    # TBD: unique constraint for message/user

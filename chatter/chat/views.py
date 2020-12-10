@@ -60,6 +60,9 @@ def fetch_latest_messages(request, room_id):
     room = get_object_or_404(
         Room.objects.for_user(request.user).select_related("owner"), pk=room_id
     )
+    Recipient.objects.filter(user=request.user, message__room=room).update(
+        read=timezone.now()
+    )
     messages = (
         Message.objects.filter(room=room)
         .order_by("-created")
@@ -87,7 +90,7 @@ def send_message(request, room_id):
     data = {
         "type": "chat.message",
         "group": f"room-{room.id}",
-        "message": {"sender": request.user.username, "text": text, "id": message.id,},
+        "message": {"sender": request.user.username, "text": text, "id": message.id},
     }
     async_to_sync(channel_layer.group_send)("chat", data)
     return JsonResponse(data)

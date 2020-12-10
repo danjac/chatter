@@ -1,14 +1,12 @@
 {% load account chat %}
 {% for message in chat_messages reversed %}
-<div class="py-3 border-b flex items-center justify-between w-full">
-  <div class="flex items-center">
+<div class="py-3 border-b w-full">
+  <div class="flex items-center justify-between mb-3">
     <div class="mr-2 font-semibold{% if message.sender == user %} text-purple-600{% endif %}">
       {% user_display message.sender %}
     </div>
-    <div class="text-gray-800">
-      {{ message.text|as_markdown }}
-    </div>
+    <div class="text-sm text-gray-500">{{ message.created|date:"H:i d.m" }}</div>
   </div>
-  <div class="text-sm text-gray-500">{{ message.created|date:"H:i d.m.Y" }}</div>
+  {{ message.text|as_markdown }}
 </div>
 {% endfor %}
