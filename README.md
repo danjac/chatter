@@ -26,6 +26,20 @@ These features would likely be needed in any "serious" production app but are no
 
 A production deployment should also use Daphne or Uvicorn as channel backend.
 
+## Local setup
+
+This requires docker and docker-compose be installed on your machine. More details here:
+
+https://github.com/danjac/django-saas-starter
+
+For local development:
+
+    cp .env.example .env
+
+Edit the environment variables as per the SAAS starter instructions.
+
+    docker-compose up -d
+
 ## Architecture
 
 Specific parts of the site we want to update asynchronously are demarcated with a Stimulus socket controller. This controller automatically reloads the content of the element with an AJAX request if the specific group/type match the websocket data.
