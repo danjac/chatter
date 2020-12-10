@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models, transaction
 from django.urls import reverse
+from django.utils import timezone
 
 # Third Party Libraries
 from model_utils.models import TimeStampedModel
@@ -52,6 +53,12 @@ class Room(TimeStampedModel):
         if user.is_anonymous:
             return False
         return self.owner == user or self.members.filter(pk=user.id).exists()
+
+    def mark_read(self, user):
+        """Mark all messages read for user in this room"""
+        return Recipient.objects.filter(user=user, message__room=self).update(
+            read=timezone.now()
+        )
 
     @transaction.atomic()
     def create_message(self, sender, text):

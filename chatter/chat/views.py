@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
-from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 # Third Party Libraries
@@ -72,9 +71,7 @@ def room_detail(request, room_id):
         Message.objects.filter(room=room).order_by("-created").select_related("sender")
     )
 
-    Recipient.objects.filter(message__room=room, user=request.user).update(
-        read=timezone.now()
-    )
+    room.mark_read(request.user)
 
     return TemplateResponse(
         request,
@@ -92,9 +89,7 @@ def fetch_latest_messages(request, room_id):
     room = get_object_or_404(
         Room.objects.for_user(request.user).select_related("owner"), pk=room_id
     )
-    Recipient.objects.filter(user=request.user, message__room=room).update(
-        read=timezone.now()
-    )
+    room.mark_read(request.user)
     messages = (
         Message.objects.filter(room=room)
         .order_by("-created")
