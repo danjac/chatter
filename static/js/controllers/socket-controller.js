@@ -1,14 +1,14 @@
+import axios from 'axios';
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
   static targets = ['input'];
 
   static values = {
-    url: String,
-    component: String,
-    include: String,
-    exclude: String,
+    group: String,
     type: String,
+    url: String,
+    refreshUrl: String,
   };
 
   connect() {
@@ -22,35 +22,11 @@ export default class extends Controller {
     this.socket = null;
   }
 
-  getComponent(group, type, components) {
-    const component = components[this.componentValue];
-    if (!component) {
-      return null;
-    }
-    if (type !== this.typeValue) {
-      return null;
-    }
-
-    if (!this.hasIncludeValue && !this.hasExcludeValue) {
-      return component;
-    }
-
-    if (this.hasIncludeValue && group === this.includeValue) {
-      return component;
-    }
-
-    if (this.hasExcludeValue && group !== this.excludeValue) {
-      return component;
-    }
-
-    return null;
-  }
-
   async onMessage(event) {
-    const { group, type, components } = JSON.parse(event.data);
-    const component = this.getComponent(group, type, components);
-    if (component) {
-      this.element.innerHTML = component;
+    const { group, type } = JSON.parse(event.data);
+    if (this.typeValue == type && (!this.hasGroupValue || this.groupValue === group)) {
+      const response = await axios.get(this.refreshUrlValue);
+      this.element.innerHTML = response.data;
     }
   }
 }

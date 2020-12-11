@@ -5,7 +5,7 @@
   <div class="w-1/4 mr-4 p-3 bg-blue-800 text-white"
        data-controller="socket"
        data-socket-type-value="chat.message"
-       data-socket-component-value="sidebar"
+       data-socket-refresh-url-value="{% url 'chat:sidebar' %}"
        data-socket-url-value="/ws/chat/">
     {% get_sidebar user as rooms %}
     {% include "chat/_sidebar.html" %}

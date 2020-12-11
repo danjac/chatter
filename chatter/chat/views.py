@@ -12,6 +12,9 @@ from channels.layers import get_channel_layer
 # Local
 from .forms import RoomForm
 from .models import Message, Recipient, Room
+from .templatetags.chat import get_sidebar
+
+MAX_NUM_MESSAGES = 9
 
 
 @login_required
@@ -77,7 +80,7 @@ def room_detail(request, room_id):
     return TemplateResponse(
         request,
         "chat/room.html",
-        {"room": room, "chat_messages": messages, "page_size": 9},
+        {"room": room, "chat_messages": messages, "page_size": MAX_NUM_MESSAGES},
     )
 
 
@@ -110,3 +113,27 @@ def create_room(request):
     else:
         form = RoomForm()
     return TemplateResponse(request, "chat/room_form.html", {"form": form})
+
+
+@login_required
+def latest_messages(request, room_id):
+    room = get_object_or_404(Room.objects.for_user(request.user), pk=room_id)
+
+    messages = (
+        Message.objects.filter(room=room).order_by("-created").select_related("sender")
+    )[:MAX_NUM_MESSAGES]
+
+    room.mark_read(request.user)
+
+    return TemplateResponse(
+        request,
+        "chat/_messages.html",
+        {"chat_messages": messages, "page_size": MAX_NUM_MESSAGES},
+    )
+
+
+@login_required
+def sidebar(request):
+    return TemplateResponse(
+        request, "chat/_sidebar.html", {"rooms": get_sidebar(request.user)}
+    )

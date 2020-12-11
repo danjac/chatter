@@ -1,16 +1,6 @@
 {% extends "chat/base.html" %}
 {% load account pagination %}
 
-{% block messages %}
-{{ block.super }}
-<div data-controller="socket"
-     data-socket-type-value="chat.message"
-     data-socket-url-value="/ws/chat/"
-     data-socket-component-value="status"
-     data-socket-exclude-value="room-{{ room.id }}">
-</div>
-{% endblock messages %}
-
 {% block chat_content %}
 
 <h1 class="font-semibold text-xl mb-3">#{{ room.name }}</h1>
@@ -20,9 +10,9 @@
 {% if page_obj.number == 1 %}
 <div data-controller="socket"
      data-socket-type-value="chat.message"
+     data-socket-group-value="room-{{ room.id }}"
      data-socket-url-value="/ws/chat/"
-     data-socket-component-value="messages"
-     data-socket-include-value="room-{{ room.id }}">
+     data-socket-refresh-url-value="{% url 'chat:latest_messages' room.id %}">
   {% else %}
   <div>
     {% endif %}
