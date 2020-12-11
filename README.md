@@ -44,6 +44,10 @@ Edit the environment variables as per the SAAS starter instructions.
 
 Specific parts of the site we want to update asynchronously are demarcated with a Stimulus socket controller matched to a specific "component", for example the sidebar. When a new chat message is generated, these components are rendered inside the consumer for each relevant user, and the result is pushed to the client. The controller then inserts the content of the matching component.
 
+The *socket-type-value* value is used to determine if the particular event applies to this component, e.g. "chat.message". A couple of additional controller values determine whether to apply the update to the specific component: *socket-include-value* will only update if the "group" value in the websocket data matches this value, and *socket-exclude-value* will only update if the "group" value, if present, does not match this value. If neither are present then the component will always update as long as the type matches.
+
+For example, the sidebar will always update if there is a new message in any rooms the user belongs to; it re-orders the rooms to show last updated at the top. The status notification is shown only if there is a message sent to a room the user does not happen to be in, while the messages component only renders if the room matches that of the new message.
+
 ## License
 
 This project is covered by GNU Affero General Public License (AGPL).

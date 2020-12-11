@@ -6,7 +6,8 @@ export default class extends Controller {
   static values = {
     url: String,
     component: String,
-    group: String,
+    include: String,
+    exclude: String,
     type: String,
   };
 
@@ -21,14 +22,35 @@ export default class extends Controller {
     this.socket = null;
   }
 
+  getComponent(group, type, components) {
+    const component = components[this.componentValue];
+    if (!component) {
+      return null;
+    }
+    if (type !== this.typeValue) {
+      return null;
+    }
+    if (!group) {
+      return component;
+    }
+
+    console.log(group, this.includeValue, this.excludeValue);
+
+    if (this.hasIncludeValue && group === this.includeValue) {
+      return component;
+    }
+
+    if (this.hasExcludeValue && group !== this.excludeValue) {
+      return component;
+    }
+
+    return null;
+  }
+
   async onMessage(event) {
     const { group, type, components } = JSON.parse(event.data);
-    const component = components[this.componentValue];
-    if (
-      component &&
-      type === this.typeValue &&
-      (!this.hasGroupValue || this.groupValue === group)
-    ) {
+    const component = this.getComponent(group, type, components);
+    if (component) {
       this.element.innerHTML = component;
     }
   }

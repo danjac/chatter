@@ -1,0 +1,18 @@
+{% load account %}
+{% if message and message.sender != user %}
+<div class="flex justify-center">
+  <div data-controller="notification"
+       data-notification-timeout-value="3000"
+       class="fixed z-50 w-4/5 lg:w-1/3 flex items-center p-3 rounded shadow-xl mt-3 message message-info">
+    <div class="mx-auto text-center">
+      {% user_display message.sender %} has posted a message on
+      #<a href="{{ message.room.get_absolute_url }}" class="underline">{{ message.room.name }}</a>
+    </div>
+    <button data-action="notification#remove"
+            class="float-right">
+      <i class="fa fa-times-circle"></i>
+    </button>
+  </div>
+</div>
+{% endif %}
+

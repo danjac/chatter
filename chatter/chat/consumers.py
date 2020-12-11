@@ -18,6 +18,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             .order_by("-created")
             .select_related("sender")[:9]
         )
+
         return {
             "messages": render_to_string(
                 "chat/_messages.html", {"chat_messages": messages, "user": self.user}
@@ -26,13 +27,20 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "chat/_sidebar.html",
                 {"rooms": get_sidebar(self.user), "user": self.user},
             ),
+            "status": render_to_string(
+                "chat/_status.html", {"message": message, "user": self.user},
+            ),
         }
 
     @database_sync_to_async
     def get_message(self, message_id):
         """Get message if available to this user, or None"""
         try:
-            return Message.objects.for_user(self.user).get(pk=message_id)
+            return (
+                Message.objects.for_user(self.user)
+                .select_related("sender", "room")
+                .get(pk=message_id)
+            )
         except Message.DoesNotExist:
             return None
 
