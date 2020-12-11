@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
@@ -6,7 +5,7 @@ export default class extends Controller {
 
   static values = {
     url: String,
-    fetchUrl: String,
+    component: String,
     group: String,
     type: String,
   };
@@ -23,13 +22,14 @@ export default class extends Controller {
   }
 
   async onMessage(event) {
-    // must match group and type
-    // e.g. socket-type-value="chat.message" socket-group-value="room-1234"
-    // if matches then should do AJAX fetch to refresh content.
-    const { group, type } = JSON.parse(event.data);
-    if (type === this.typeValue && (!this.hasGroupValue || this.groupValue === group)) {
-      const response = await axios.get(this.fetchUrlValue);
-      this.element.innerHTML = response.data;
+    const { group, type, components } = JSON.parse(event.data);
+    const component = components[this.componentValue];
+    if (
+      component &&
+      type === this.typeValue &&
+      (!this.hasGroupValue || this.groupValue === group)
+    ) {
+      this.element.innerHTML = component;
     }
   }
 }

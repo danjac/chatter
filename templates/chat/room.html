@@ -11,7 +11,7 @@
 <div data-controller="socket"
      data-socket-type-value="chat.message"
      data-socket-url-value="/ws/chat/"
-     data-socket-fetch-url-value="{% url 'chat:fetch_latest_messages' room.id %}"
+     data-socket-component-value="messages"
      data-socket-group-value="room-{{ room.id }}">
   {% else %}
   <div>
