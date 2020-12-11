@@ -19,18 +19,23 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             .select_related("sender")[:9]
         )
 
-        return {
+        components = {
             "messages": render_to_string(
                 "chat/_messages.html", {"chat_messages": messages, "user": self.user}
             ),
-            "sidebar": render_to_string(
-                "chat/_sidebar.html",
-                {"rooms": get_sidebar(self.user), "user": self.user},
-            ),
-            "status": render_to_string(
-                "chat/_status.html", {"message": message, "user": self.user},
-            ),
         }
+
+        if message.sender != self.user:
+            components |= {
+                "sidebar": render_to_string(
+                    "chat/_sidebar.html",
+                    {"rooms": get_sidebar(self.user), "user": self.user},
+                ),
+                "status": render_to_string(
+                    "chat/_status.html", {"message": message, "user": self.user},
+                ),
+            }
+        return components
 
     @database_sync_to_async
     def get_message(self, message_id):
