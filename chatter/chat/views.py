@@ -14,6 +14,8 @@ from .forms import RoomForm
 from .models import Message, Recipient, Room
 from .templatetags.chat import get_sidebar
 
+MAX_NUM_MESSAGES = 9
+
 
 @login_required
 def do_redirect(request):
@@ -76,7 +78,9 @@ def room_detail(request, room_id):
     room.mark_read(request.user)
 
     return TemplateResponse(
-        request, "chat/room.html", {"room": room, "chat_messages": messages,},
+        request,
+        "chat/room.html",
+        {"room": room, "chat_messages": messages, "page_size": MAX_NUM_MESSAGES},
     )
 
 
@@ -89,7 +93,7 @@ def fetch_latest_messages(request, room_id):
     messages = (
         Message.objects.filter(room=room)
         .order_by("-created")
-        .select_related("sender")[:9]
+        .select_related("sender")[:MAX_NUM_MESSAGES]
     )
     return TemplateResponse(request, "chat/_messages.html", {"chat_messages": messages})
 
