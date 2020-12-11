@@ -30,11 +30,10 @@ export default class extends Controller {
     if (type !== this.typeValue) {
       return null;
     }
-    if (!group) {
+
+    if (!this.hasIncludeValue && !this.hasExcludeValue) {
       return component;
     }
-
-    console.log(group, this.includeValue, this.excludeValue);
 
     if (this.hasIncludeValue && group === this.includeValue) {
       return component;
