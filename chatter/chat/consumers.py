@@ -41,6 +41,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     def get_message(self, message_id):
         """Get message if available to this user, or None"""
         try:
+            print("num messages", Message.objects.for_user(self.user).count())
             return (
                 Message.objects.for_user(self.user)
                 .select_related("sender", "room")
@@ -58,7 +59,9 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_discard("chat", self.channel_name)
 
     async def chat_message(self, event):
+        print(event, self.user)
         message = await self.get_message(event["message"]["id"])
+        print("msg", message)
         if message:
             components = await self.render_components(message)
             await self.send_json({**event, "components": components})
