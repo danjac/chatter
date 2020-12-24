@@ -6,13 +6,13 @@ import pytest
 
 # Local
 from ..factories import MemberFactory, MessageFactory, RecipientFactory, RoomFactory
-from ..templatetags.chat import get_sidebar
+from ..templatetags.chat import get_rooms
 
 pytestmark = pytest.mark.django_db
 
 
-class TestGetSidebar:
-    def test_get_sidebar(self, user):
+class TestGetRooms:
+    def test_get_rooms(self, user):
         own_room = RoomFactory(owner=user)
         member_room = MemberFactory(user=user).room
         new_message_room = RoomFactory(owner=user)
@@ -36,7 +36,7 @@ class TestGetSidebar:
             read=None,
         )
 
-        rooms = get_sidebar(user)
+        rooms = get_rooms(user)
 
         assert {
             "id": mentioned_message_room.id,
