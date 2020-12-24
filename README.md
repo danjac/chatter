@@ -40,6 +40,8 @@ Edit the environment variables as per the SAAS starter instructions.
 
     docker-compose up -d
 
+Note: remember to change the default "Site" object domain to "localhost"!
+
 ## License
 
 This project is covered by GNU Affero General Public License (AGPL).
