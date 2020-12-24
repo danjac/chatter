@@ -7,9 +7,12 @@ from django.views.generic import TemplateView
 
 # Chatter
 from chatter.chat.views import do_redirect
+from chatter.users import views as account_views
 
 urlpatterns = [
     path("", do_redirect),
+    path("account/login/", account_views.login, name="account_login"),
+    path("account/signup/", account_views.signup, name="account_signup"),
     path("account/", include("allauth.urls")),
     path("chat/", include("chatter.chat.urls")),
     path(settings.ADMIN_URL, admin.site.urls),

@@ -1,0 +1,20 @@
+{% load widget_tweaks %}
+<form class="{% if form.errors %} text-red-800{% endif %}"
+      method="post"
+      action="{{ request.path }}"
+      novalidate>
+  {% csrf_token %}
+  {% with WIDGET_ERROR_CLASS="border-red-800 text-red-800" %}
+  <div class="flex items-center mb-3">
+    <label class="font-semibold mr-3">
+      {{ form.name.label }}
+      {% render_field form.name class="p-1 w-96" %}
+    </label>
+    <button type="submit"
+            class="px-2 py-1 rounded bg-blue-800 hover:bg-blue-600 text-white">
+      Create Room
+    </button>
+  </div>
+  {% include "_form_errors.html" with errors=form.name.errors %}
+  {% endwith %}
+</form>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Turbolinks from 'turbolinks';
+import { connectStreamSource } from '@hotwired/turbo';
 
 import { Application } from 'stimulus';
 import { definitionsFromContext } from 'stimulus/webpack-helpers';
@@ -14,5 +14,5 @@ const application = Application.start();
 const context = require.context('./controllers', true, /\.js$/);
 application.load(definitionsFromContext(context));
 
-// Turbolinks setup
-Turbolinks.start();
+// Turbo setup
+connectStreamSource(new EventSource('ws://' + window.location.host + '/ws/chat/'));

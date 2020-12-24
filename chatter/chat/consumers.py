@@ -1,4 +1,7 @@
 # Third Party Libraries
+# Django
+from django.template.loader import render_to_string
+
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
@@ -30,4 +33,6 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def chat_message(self, event):
         message = await self.get_message(event["message"]["id"])
         if message:
-            await self.send_json(event)
+            text = render_to_string("chat/_message.html", {"message": message})
+            text = f'<turbo-stream target="messages" action="append"><template>{text}</template></turbo-stream>'
+            await self.send({"type": "websocket.send", "text": text})

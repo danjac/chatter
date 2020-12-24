@@ -1,28 +1,8 @@
 {% extends "chat/base.html" %}
-{% load widget_tweaks %}
 
 {% block chat_content %}
 <h1 class="font-semibold text-xl mb-3">Create a New Room</h1>
-<form class="{% if form.errors %} text-red-800{% endif %}"
-      data-controller="form"
-      data-action="form#submit"
-      method="post"
-      action="{{ request.path }}"
-      novalidate>
-  {% csrf_token %}
-  {% with WIDGET_ERROR_CLASS="border-red-800 text-red-800" %}
-  <div class="flex items-center mb-3">
-    <label class="font-semibold mr-3">
-      {{ form.name.label }}
-      {% render_field form.name class="p-1 w-96" %}
-    </label>
-    <button type="submit"
-            class="px-2 py-1 rounded bg-blue-800 hover:bg-blue-600 text-white">
-      Create Room
-    </button>
-  </div>
-  {% include "_form_errors.html" with errors=form.name.errors %}
-  {% endwith %}
-</form>
-
+<div id="room-form">
+  {% include "chat/_room_form.html" %}
+</div>
 {% endblock chat_content %}

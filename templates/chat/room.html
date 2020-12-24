@@ -8,23 +8,22 @@
 {% include "_pagination.html" with css_class="pb-3 border-b" %}
 
 {% if page_obj.number == 1 %}
-<div data-controller="socket"
-     data-socket-type-value="chat.message"
-     data-socket-group-value="room-{{ room.id }}"
-     data-socket-url-value="/ws/chat/"
-     data-socket-refresh-url-value="{% url 'chat:latest_messages' room.id %}">
+<div>
   {% else %}
   <div>
     {% endif %}
-    {% include "chat/_messages.html" with chat_messages=page_obj.object_list %}
+    <div id="messages">
+      {% for message in chat_messages reversed %}
+      {% include "chat/_message.html" %}
+      {% endfor %}
+    </div>
   </div>
 
   {% if page_obj.number == 1 %}
   <form class="flex items-center mt-6"
-        data-controller="form"
         method="post"
         action="{% url 'chat:send_message' room.id %}"
-        data-action="form#submit form#reset">
+        data-turbo-frame="messages">
     {% csrf_token %}
     <input type="text"
            name="text"

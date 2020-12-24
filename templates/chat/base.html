@@ -2,11 +2,7 @@
 {% load chat %}
 {% block content %}
 <div class="min-h-screen flex relative">
-  <div class="w-1/4 mr-4 p-3 bg-blue-800 text-white"
-       data-controller="socket"
-       data-socket-type-value="chat.message"
-       data-socket-refresh-url-value="{% url 'chat:sidebar' %}"
-       data-socket-url-value="/ws/chat/">
+  <div class="w-1/4 mr-4 p-3 bg-blue-800 text-white">
     {% get_sidebar user as rooms %}
     {% include "chat/_sidebar.html" %}
   </div>
