@@ -8,8 +8,9 @@
 {% include "_pagination.html" with css_class="pb-3 border-b" %}
 
 {% if page_obj.number == 1 %}
-<div data-controller="socket"
-     data-socket-url-value="ws://localhost/ws/chat/">
+<div data-controller="chat"
+     data-chat-socket-url-value="ws://{{ request.site.domain }}/ws/chat/"
+     data-chat-send-url-value="{% url 'chat:send_message' room.id %}">
   {% else %}
   <div>
     {% endif %}
@@ -18,23 +19,22 @@
       {% include "chat/_message.html" %}
       {% endfor %}
     </div>
-  </div>
 
-  {% if page_obj.number == 1 %}
-  <form class="flex items-center mt-6"
-        method="post"
-        data-controller="form"
-        data-action="form#submit form#reset"
-        action="{% url 'chat:send_message' room.id %}">
-    {% csrf_token %}
-    <input type="text"
-           name="text"
-           placeholder="Write your message..."
-           required
-           autocomplete="off"
-           class="mr-3 w-full">
-    <button class="rounded bg-blue-800 hover:bg-blue-600 px-3 py-2 text-white">Send</button>
-  </form>
-  {% endif %}
+    {% if page_obj.number == 1 %}
+    <form class="flex items-center mt-6"
+          method="post"
+          data-action="chat#sendMessage">
+      {% csrf_token %}
+      <input type="text"
+             name="text"
+             data-chat-target="input"
+             placeholder="Write your message..."
+             required
+             autocomplete="off"
+             class="mr-3 w-full">
+      <button class="rounded bg-blue-800 hover:bg-blue-600 px-3 py-2 text-white">Send</button>
+    </form>
+    {% endif %}
+  </div>
 </div>
 {% endblock chat_content %}
