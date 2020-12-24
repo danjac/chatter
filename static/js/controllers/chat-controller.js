@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Controller } from 'stimulus';
-// import ReconnectingWebSocket from 'reconnecting-websocket';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import { connectStreamSource, disconnectStreamSource } from '@hotwired/turbo';
 
@@ -13,8 +13,8 @@ export default class extends Controller {
   };
 
   connect() {
-    // this.source = new ReconnectingWebSocket(this.socketUrlValue);
-    this.source = new WebSocket(this.socketUrlValue);
+    this.source = new ReconnectingWebSocket(this.socketUrlValue);
+    // this.source = new WebSocket(this.socketUrlValue);
     connectStreamSource(this.source);
   }
 
