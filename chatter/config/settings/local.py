@@ -11,3 +11,6 @@ SITE_ID = 1
 INSTALLED_APPS += ["silk"]
 
 MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
+
+EVENTSTREAM_ALLOW_ORIGIN = "*"
+# EVENTSTREAM_ALLOW_CREDENTIALS = True

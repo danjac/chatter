@@ -44,7 +44,7 @@ def as_markdown(text):
 
 
 @register.simple_tag
-def get_sidebar(user):
+def get_rooms(user):
     all_recipients = (
         Recipient.objects.filter(user=user, read__isnull=True)
         .select_related("message", "message__sender", "message__room")

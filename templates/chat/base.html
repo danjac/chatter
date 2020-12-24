@@ -2,8 +2,9 @@
 {% load chat %}
 {% block content %}
 <div class="min-h-screen flex relative">
-  <div class="w-1/4 mr-4 p-3 bg-blue-800 text-white">
-    {% get_sidebar user as rooms %}
+  <div class="w-1/4 mr-4 p-3 bg-blue-800 text-white"
+       id="sidebar">
+    {% get_rooms user as rooms %}
     {% include "chat/_sidebar.html" %}
   </div>
   <div class="w-3/4 p-3 bg-white">

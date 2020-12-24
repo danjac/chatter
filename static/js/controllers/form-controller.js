@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
-  async submit(event) {
+  submit(event) {
     event.preventDefault();
 
     const referrer = location.href;
@@ -12,12 +12,11 @@ export default class extends Controller {
 
     const data = new FormData(this.element);
 
-    await axios({
+    axios({
       data,
       method,
       url,
     });
-    const contentType = response.headers['content-type'];
   }
 
   reset() {

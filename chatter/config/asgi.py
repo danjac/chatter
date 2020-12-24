@@ -13,6 +13,7 @@ from chatter.chat import routing as chat_routing
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "chatter.config.settings.local")
 
+
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
