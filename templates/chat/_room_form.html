@@ -1,5 +1,6 @@
 {% load widget_tweaks %}
 <form class="{% if form.errors %} text-red-800{% endif %}"
+      id="room-form"
       method="post"
       action="{{ request.path }}"
       novalidate>
