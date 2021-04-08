@@ -1,9 +1,7 @@
 # Third Party Libraries
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-
-# Chatter
-from chatter.common.turbo import render_turbo_stream_to_string
+from turbo_response import TurboStream
 
 # Local
 from .models import Message
@@ -40,18 +38,14 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         rooms = await self.get_rooms()
         if message:
             await self.send(
-                render_turbo_stream_to_string(
-                    "chat/_message.html",
-                    {"message": message, "user": self.user,},
-                    action="append",
-                    target="messages",
+                TurboStream("messages")
+                .append.template(
+                    "chat/_message.html", {"message": message, "user": self.user,},
                 )
+                .render()
             )
             await self.send(
-                render_turbo_stream_to_string(
-                    "chat/_sidebar.html",
-                    {"rooms": rooms},
-                    action="update",
-                    target="sidebar",
-                )
+                TurboStream("sidebar")
+                .update.template("chat/_sidebar.html", {"rooms": rooms},)
+                .render()
             )

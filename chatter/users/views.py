@@ -2,9 +2,7 @@
 
 # Third Party Libraries
 from allauth.account import views as account_views
-
-# Chatter
-from chatter.common.turbo.mixins import TurboStreamFormMixin
+from turbo_response.mixins import TurboStreamFormMixin
 
 
 class LoginView(TurboStreamFormMixin, account_views.LoginView):

@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "channels",
     "django_extensions",
     "djcelery_email",
+    "turbo_response",
     "widget_tweaks",
 ] + LOCAL_APPS
 
@@ -80,6 +81,7 @@ MIDDLEWARE = [
     "django.contrib.sites.middleware.CurrentSiteMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
+    "turbo_response.middleware.TurboMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -211,7 +213,7 @@ LOGGING = {
     },
     "loggers": {
         "root": {"handlers": ["console"], "level": "INFO"},
-        "django.security.DisallowedHost": {"handlers": ["null"], "propagate": False},
+        "django.security.DisallowedHost": {"handlers": ["null"], "propagate": False,},
         "django.request": {"handlers": ["console"], "level": "ERROR"},
     },
 }
@@ -222,3 +224,5 @@ CHANNEL_LAYERS = {
         "CONFIG": {"hosts": [("redis", 6379)],},
     },
 }
+# prevent deprecation warnings
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

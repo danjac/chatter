@@ -8,9 +8,7 @@ from django.views.decorators.http import require_POST
 # Third Party Libraries
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-
-# Chatter
-from chatter.common.turbo.response import TurboStreamTemplateResponse
+from turbo_response import TurboStream
 
 # Local
 from .forms import RoomForm
@@ -112,8 +110,10 @@ def create_room(request):
             room.owner = request.user
             room.save()
             return redirect(room)
-        return TurboStreamTemplateResponse(
-            "chat/_room_form.html", {"form": form}, action="update", target="room-form"
+        return (
+            TurboStream("room-form")
+            .update.template("chat/_room_form.html", {"form": form},)
+            .response(request)
         )
     else:
         form = RoomForm()
