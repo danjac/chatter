@@ -16,6 +16,7 @@ django-redis
 django-silk
 django-storages
 django-widget-tweaks
+django-turbo-response
 factory-boy
 future
 gunicorn
